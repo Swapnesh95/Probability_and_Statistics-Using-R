@@ -1,0 +1,696 @@
+---
+output:  
+  html_document:
+    css: bootstrap.css
+    
+      
+---
+
+<style type="text/css">
+
+body, td {
+   font-size: 16px;
+   
+}
+code.r{
+  font-size: 15px;
+  
+}
+pre {
+  font-size: 15px
+}
+</style>
+
+---
+
+
+<BR>
+<BR>
+<HTML>
+<HEAD>
+<BODY>
+<CENTER>
+<FONT SIZE=5, COLOR="#891A01">
+<BR> <B>PROBABBILITY THEORY AND INTRODUCTORY STATISTICS </B>
+<BR> SWAPNESH TIWARI
+<BR> Date :  `r format(Sys.time(), "%d %B, %Y")`
+</FONT>
+</CENTER>
+</HEAD>
+<BR>
+<BR>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<CENTER>
+<P><BR>
+<FONT SIZE=3, COLOR="#079A2F">
+<B> <U> INTRO </U> </B> 
+</FONT>
+</CENTER>
+
+<BR>
+<FONT SIZE=2.5, COLOR="#8F079A">
+
+<BR> <H4> <B> IMPORTANCE OF SALES MARKET OF AUTOMOBILE </B> </H4>
+<BR> <H5> In today century car is one of the number one medium of transport, cars sales have increased from the date it was first ever manufactured. According to Statistica most of the automobile industry produces cars which are used commercially or privately. According to Statistica most of the manufacturing related to automobile field takes place in China, about 122.7 million of the cars were sold in 2021 decreasing the growth rate by 1.4 percent, making Toyota the largest selling brand with 10.5 million sales overtime mostly focused on commercial and passenger sector, Leading more in light vehicle production with a net total profit of about 28 trillion Japanese Yen in 2021. According to Statistica the worlds best and largest automotive parts supplier is Bosch which has its sales up to 32.6 billion United States Dollars and when talking about India most selling brand in automobile is Maruti Suzuki.</H5>
+
+
+<BR> <H4> <B> DISCRETE AND CONTINOUS PROBABILITY DISTRIBUTIONS </B> </H4>
+<BR> <H5> <B> 1. Discrete : </B> It defines any value that can be counted therefore whenever we define Distribution as discrete we always assume that value of X is always equals to something , It is important since it helps in making the very fabric of hypothesis from raw data whenever it is difficult to generate interpretation from an extensive data.</H5> 
+<BR>
+<H5> <B>2.Continuous :</B> Continuous data always is defined whenever there is use of values that are measures, for example height, weight, age this data goes from every single number from 0 to 1.This is important since whenever we interpret a normal probability distribution it is always continuous and total area under the cure is always equal to 1, and it has a statistical advantage since it can handle a large number of applications. </H5>
+
+
+<BR> <H4> <B> DESCRIPTION ABOUT THE DATASET </B> </H4>
+<BR> <H5>  The dataset used in this project describes mainly about sales of cars in different location including model number, fuel type, transmission, number of owner, efficiency, engine cc, power base horse power, number of seats and some important information such as KMs run and price of the vehicle. In this dataset we see that maximum Engine cc hold is about 4000 and maximum power base horse power is about 400. </H5> 
+
+<BR>
+
+---
+
+---
+
+<BR>
+<FONT SIZE = 4, COLOR ="AB766A">
+<BR><B>Analysis</B>
+</FONT>
+<BR>
+<BR>
+
+
+---
+
+---
+
+<BR>
+
+```{r Libraries, warning=FALSE, message=FALSE}
+
+# LIBRARIES 
+
+library(readxl)
+library(tidyverse)
+library(dplyr)
+library(DT)
+library(RColorBrewer)
+library(rio)
+library(dbplyr)
+library(psych)
+library(FSA)
+library(magrittr)
+
+#PATH TO DATA SOURCE (DATASET)
+
+CarSet <- read_excel("C://Users//User//OneDrive//Documents//ALY_6010//Datasets//M1data_carsales.xlsx")
+
+```
+
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>FIRST TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+# 1 .In this first task I will use psych function which was developed by northwestern university to include some of the functions which can render some Psychological research work.
+
+CarSet%>%
+  dplyr::select("Efficiency", "Power_bhp", "Seats", "Km","Price")%>%
+  psych::describe()%>%
+  t()%>%
+  round(2)%>%
+  knitr::kable()%>%
+  kableExtra::kable_classic_2()
+
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+Using psych function alone did not make data readable and presentable but after using the following commands t and round made table more readable and expressible but there is significant loss of data in price since decimals in finance means alot of money. Using kable extra as an alternative made my table more classy and appealing.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>SECOND TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+# In this second task I will use different variable to generate a bar plot and a pie chart.
+
+#Creating 2 rows using MFCOL function
+
+par(mfcol = c(1,2))
+par(mar = c(7,4,2,2))
+
+
+#Creating a graph using Location as Variable
+
+CarGraph = barplot(table(CarSet$Location),
+  main = " Categories-Location-Frequency",
+  ylab = "",
+  xlab = "",
+  ylim = c(0, 700),
+  las = "2",
+  col = brewer.pal(5,"Dark2"),
+  )
+
+
+#Using title function to improve visualization of table
+
+title(ylab = "Frequencies", line = 2.5, cex.lab = 1.0, col.lab = "#AE7804")
+title(xlab = "Categories", line = 5.8, cex.lab = 1.0, col.lab = "#AE1604")
+
+
+#Using Box function to set a boundary around and inside the figure
+
+box(which = "figure", lty = "dashed", col = "darkred")
+box(which = "plot", lty = "dotdash", col = "brown2")
+
+
+#Pie Chart
+
+pie (table (CarSet$FuelType), 
+  labels = table(CarSet$FuelType), 
+  radius = 0.8,
+  main = "Pie Chart of Variable Fuel Type",
+  col = terrain.colors(4),
+  cex = 0.7
+  )
+
+legend ("bottomright",
+       legend=paste(unique(sort(CarSet$FuelType)), "Fuel Type"),
+       fill = terrain.colors(4),
+       cex = 0.6)
+
+box(which = "figure", lty = "solid", col = "darkred")
+```
+
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+Bar plot shows regions of India on x - axis and the frequency of cars sold in the y - axis which are pre-owned cars, as we can see in the graph most of the cars are sold in Mumbai followed by Delhi. According to bar plot the profit of this company can be increased  if they focus on providing more cars in Mumbai and Delhi and Pune region.  
+On the other hand pie chart demonstrates the different fuel type of cars, as shown in the legend. Most fuel type used in India is Gasoline fuel also called as petrol followed by diesel type. More petrol cars are sold since they are more cheaper than a diesel engine.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>THIRD TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+# Creating another variable along with some calculations 
+
+CarTable = table(CarSet$Location)
+CarTable2 = as.data.frame(CarTable)
+
+#Renaming variables
+
+names(CarTable2)[names(CarTable2) == "Var1"] = "Location"
+names(CarTable2)[names(CarTable2) == "Freq"] = "Frequency"
+
+#Creating 3 new columns using mutate function
+
+CarTable2 = mutate(CarTable2,
+  CumFreq = cumsum (CarTable2$Frequency), 
+  Percentage = round ((Frequency/sum(Frequency)) * 100, 2), 
+  CumPercentage = cumsum (Percentage))
+
+#Using kable function to generate a table and using kableExtra to improve visualization.
+
+knitr::kable(CarTable2)%>%
+  kableExtra::kable_styling(bootstrap_options = "bordered", "hover")
+
+
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+Highest sales frequency of cars can be observed in Mumbai since maximum sales are being observed in Mumbai followed by Delhi. This table can be used to identify whether the data is positively or negatively skewed , we can see that the values of cumulative freq and cumulative percentage are increasing therefore in this case the data is skewed left (plot on a distribution graph it will have a long tail) which is also called as negatively skewed data.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>FOURTH TASK</B>
+</FONT>
+<BR>
+
+
+```{r Desnity Plot}
+# Using Kilometers variables to create a density plot
+
+#Making a object to store kilometers
+
+CarKm1 = c(CarSet$Km/1000
+          )
+
+#Calculating Mean and Standard Score
+
+CarMean = mean(CarKm1)
+CarSD = sd(CarKm1)
+
+#Calculating Z score
+ZScore24 = (2.4 * CarSD)+CarMean
+ZScore31 = (-3.1 * CarSD)+CarMean
+
+#Developing a density plot using density function
+DensePlot = density(CarKm1, adjust = 1)%>%
+plot()
+
+#Plotting lines on graph using abline function
+
+abline(v= CarMean, col = "green" , lwd = 3)
+abline(v= ZScore24, col = "Yellow" , lwd = 3)
+abline(v= ZScore31, col = "Red", lwd = 3)
+
+#Adding tex to the density plot to make visualization of values more clear
+text(x = ZScore24, 
+     y = 0.008, 
+     paste(round(ZScore24), 2)
+     )
+
+text(x = ZScore31, 
+     y = 0.010, 
+     paste(round(ZScore31), 2)
+     )
+
+text(x = CarMean, 
+     y = 0.008, 
+     paste(round(CarMean), 2)
+     )
+
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+This graph shows a density plot where Mean value which is ``r CarMean`` is shown and 2.4 standard deviation which is ``r ZScore24`` above the mean and -3.1 standard deviation which is ``r ZScore31`` below the mean is shown.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>FIFTH TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+# In this task I will create a horizontal box plot using kilometers as my variable.
+
+#Using par function to add two graphs in one row
+
+par(mfrow=c(2,1))
+par(mai=c(0.6,1,0.2,0.4))
+
+#Creating Box plot
+CarMedian = median(CarKm1)
+
+boxplot(CarKm1,
+        horizontal = T, 
+        main = " " ,
+        col = brewer.pal(3, "Set1")
+        )
+
+#Creating a box around figure to differentiate between two
+
+box(which = "figure", col = "red")
+
+#Creating Points to locate mean value
+
+points(
+  x = CarMean,              
+  y = c(1),
+  col = "green",
+  pch = 17
+)
+
+#creating histogram
+
+hist(CarKm1,
+     main = "",
+     xlab = "",
+     col = brewer.pal(8, "Dark2"),
+     breaks = 25)
+
+box(which = "figure", col = "green")
+
+title(xlab = "Kilometers", line = 2, cex.lab = 0.8, col.lab = "#751F14")
+
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+In the box plot we can observe that mean value lies just above the median line whose value is ``r CarMedian`` in the box plot and mean which is ``r CarMean``. Most of the data in the box plot lies in the 3rd quartile and we can also observe outliers above the 75th percentile and no outliers below the median line.  
+Histogram shows no spaces in data therefore there are no missing values obtained. Maximum cars this company sells have an average of 50000 kms running. Cars in range of 100000 - 150000 are very less and have less tendency to be sold due to increased km running.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>SIXTH TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+# In this task I will create a horizontal box plot using Price as my variable.
+
+CarPrice = c(CarSet$Price)
+PriceMean = mean(CarPrice)
+
+CarMedian = median(CarPrice)
+
+#Using par function to add two graphs in one row
+
+par(mfrow=c(2,1))
+par(mai=c(0.6,1,0.2,0.4))
+
+#Creating Box plot
+
+boxplot(CarPrice,
+        horizontal = T, 
+        main = "Box Plot of Cars Price " ,
+        col = brewer.pal(3, "Set1")
+        )
+
+#Creating a box around figure to differentiate between two
+
+box(which = "figure", col = "darkred")
+
+#Creating Points to locate mean value
+
+points(
+  x = PriceMean,              
+  y = c(1),
+  col = "green",
+  pch = 17
+)
+
+#creating histogram
+
+hist(CarPrice,
+     main = "Histogram of Cars Price",
+     xlab = "",
+     col = brewer.pal(8, "Set3"),
+     breaks = 25)
+
+box(which = "figure", col = "purple")
+
+title(xlab = "Price", line = 2, cex.lab = 0.8, col.lab = "#751F14")
+
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+The box plot shows us the quartiles, median andany outliers present, in this case we can see the median value which is ``r CarMedian`` as well as the Mean value of the price which is ``r PriceMean`` ,dooes not lie close to each other, on a measure of standard deviation the data is spread away from mean therefore data is likely to be reliable.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>SEVENTH TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+
+#Creating an object to relate two variables and to attach mean along with it using tapply
+CarDist = tapply(CarSet$Price, CarSet$Owner, mean)
+
+#creating boxplot
+
+boxplot(
+  CarSet$Price~CarSet$Owner,
+  xlab = "",
+  ylab = "",
+  col = brewer.pal(4, "Dark2"),
+  main = "Distribution of Owner according to Price",
+)
+
+#Creating points
+points(
+  y = CarDist,              
+  x = c(1, 2, 3, 4),
+  col = "#CED70F",
+  pch = 17
+)
+
+title(xlab = "Owner Level", line = 2.5, cex.lab = 1, col.lab = "#751F14")
+title(ylab = "Price", line = 2.5, cex.lab = 1, col.lab = "#751F14")
+
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+As we see in this observation we have total of 4 box plots which shows number of owner of a vehicle on x axis and price according to number of owner. This box plot shows that as the number of owner increases the price value decreases. observe the first owner the average price is very close to the median line whereas in the Fourth and Third owner the average price is away from the median line which shows that price drops eventually with increase in number of owners on one vehicle.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>EIGHTH TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+
+#Using par function to create margins
+
+par(mai=c(1.4,1,0.4,1))
+
+CarDist2 = tapply(CarSet$Km, CarSet$Location, mean)
+
+#Creating boxplot of Location
+
+boxplot(
+  CarSet$Km~CarSet$Location,
+  xlab = "",
+  ylab = "",
+  col = brewer.pal(4, "Dark2"),
+  las = 2,
+  main = "Distribution of Locations according to kilometer",
+)
+
+#Creating points
+
+points(
+  y = CarDist2,              
+  x = c(1,2,3,4,5,6,7,8,9,10,11),
+  col = "#CED70F",
+  pch = 17
+)
+
+title(xlab = "Locations", line = 5.3, cex.lab = 1, col.lab = "#751F14")
+title(ylab = "Kilometers", line = 3.8, cex.lab = 1, col.lab = "#751F14")
+
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+Above observation contains two variables, one is locations on x axis and other is KMs of car on Y axis, this box plot shows that all the locations have average kms on most of their cars which lies very close and some on the median values, Most of the cars having higher level of km achieved are mostly found in Chennai and Pune, this means people mostly do not sell their cars until they have a long run on their KM levels. Most of the states except Pune have outliers in their 75th and 100th percentile and no outliers present below the median and mean value. This is a good example of Normal distribution since all the mean values are very close to median values which depicts that standard deviation will be very close to mean and therefore the data is reliable and accurate.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>NINTH TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+
+#Using New function to get values by which a boxplot is created
+
+boxplot.stats(CarSet$Km)
+```
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+Box plot stats is a function which is used to gather necessary statistics which are basically required and needed to develop and generate a box plot.  
+n shows the number of observations in our data, basically it shows your sample size.  
+Stats shows the lowest percentile of the box plot which is 0th percentile which is 171, the 25th percentile which is 34994, the 50th percentile which is 54000, the 75th percentile which is 72618 and the 100th percentile which is 129000. This values are important since to develop a box plot this values needs to be plotted.
+Out basically means outliers, it shows the data which lies beyond the limit of whiskers therefore cannot be plotted in the box plot and are present after the 100th percentile and beyond 0th percentile of the box plot.
+</FONT>
+<BR>
+
+---
+
+---
+
+
+<BR>
+<FONT SIZE = 4, COLOR ="073175">
+<BR><B>TENTH TASK</B>
+</FONT>
+<BR>
+
+
+```{r}
+
+#Using same variable as above and creating stats report for variable Km
+
+CarStats = c(boxplot.stats(CarSet$Km)$stats)
+
+#Using dotchart to visualize the data
+
+dotchart(CarStats,
+         main = "Dot Chart of Kilometers",
+         col = brewer.pal(5,"Dark2"))
+
+title(xlab = "Kilometers", line = 2.5, cex.lab = 1, col.lab = "#751F14")
+```
+
+<P><BR>
+<FONT SIZE=2.5, COLOR="#15C1C9">
+Above figure is a dot chart of variable Km, We have used stat fucntion here to get the statistical information of the following above variable KM.In this figure most of the cars in this datsets have already crossed 60000 kms of runnning, and most of the sales department consist of cars which have above 80000 running kms.
+</FONT>
+<BR>
+
+---
+
+---
+
+<BR>
+
+<CENTER>
+<P><BR>
+<FONT SIZE=3, COLOR="#079A2F">
+<B> <U> CONCLUSION </U> </B> 
+</FONT>
+</CENTER>
+
+<BR>
+<FONT SIZE=2.5, COLOR="#8F079A">
+
+<BR> <H5> We started with the basics of this car sales market which gives us an overview of how the car sales market works and what kind of company stakes at higher demand when it comes to different locations.  
+Secondly, we used a car sales data set which contains many variables as discussed at the very beginning of this project  
+We have altogether 10 tasks in this project starting with the PSYCH function in R which was developed by the northwestern university to describe and to get some valuable information on the research based on psychology.  
+The second task consists of a histogram and a pie chart, a histogram depicting the frequency of locations in the data set, and a pie chart depicting the fuel type and its frequency in the data set.  
+In the third task, the table represents the locations and their frequencies but, in this task, we have also added cumulative frequency and cumulative percentage.  
+In the fourth task, we observed that the highest sales were according to fewer kilometers run car, people tend to buy fewer cars with more kilometers run therefore it shows that cars with more kilometers on it are less reliable.  
+Now in the fifth task, we took the same variable but now represented the data using different visualization which is a box plot and a histogram, and note that there is a specific difference between a density graph and a histogram.  
+For the sixth task, we use the same strategy as the fifth task but where we used the variable price, I represented the values by using the inline r codes, with the following representation of the graph we can plot the standard deviation which tells us that data is spread away from the mean, therefore, the data is not reliable and is not accurate.  
+The seventh and Eighth task contains multiple box plot which gives us an overview of the relationship between the Owner and the price in the seventh task and the relationship between Locations and Kilometers run in the Eighth task.  
+The ninth and tenth task contains the same strategies but as discussed in the observations of the ninth task we can see 3 different states which are stats, n, conf, and out, these values are very basic to generate a box plot.  
+Summing up the car data sets are used by many companies to generate their company’s information but the question is, is the data reliable since cars with high Kilometers running can also be reliable which needs to be a point of concern.
+</FONT>
+</H5>
+
+<BR>
+
+---
+
+---
+
+<BR>
+<CENTER>
+<P><BR>
+<FONT SIZE=3, COLOR="#079A2F">
+<B> <U> BIBLOGRAPHY </U> </B> 
+</FONT>
+</CENTER>
+
+<BR>
+<FONT SIZE=2.5, COLOR="#8F079A">
+
+<BR><H5> Bluman, A. (2014). Elementary Statistics: A step by step approach 9e. McGraw Hill.  
+Kabacoff, R. I. (2015). R in action: data analysis and graphics with R. Simon and Schuster.
+</FONT> 
+</H5>
+
+<BR>
+
+---
+
+---
+
+<BR>
+<CENTER>
+<P><BR>
+<FONT SIZE=3, COLOR="#079A2F">
+<B> <U> APPENDIX </U> </B> 
+</FONT>
+</CENTER>
+
+<BR>
+<FONT SIZE=2.5, COLOR="#8F079A">
+
+<BR><H5> An R Markdown file has been attached to this report. The name of the file is Project1_Tiwari.rmd<BR>
+
+---
+
+---
+
+<BR>
+
